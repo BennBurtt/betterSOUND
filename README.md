@@ -11,7 +11,18 @@ Petite app macOS pour voir et régler toutes les entrées et sorties son, et tou
 - **Tout réinitialiser** (⌘R) : réactive le son partout, remet les volumes au niveau choisi (50 % en sortie et 75 % en entrée par défaut), centre la balance et, si l'option est cochée, remet les haut-parleurs et le micro intégrés par défaut.
 - **Redémarrer le service audio** : relance `coreaudiod`. Utile quand le son grésille, se coupe ou disparaît. Le mot de passe administrateur est demandé.
 
-## Installation
+## Télécharger (sans compiler)
+
+L'app est compilée automatiquement par GitHub à chaque modification :
+**[Télécharger betterSOUND.zip](https://github.com/BennBurtt/betterSOUND/releases/latest/download/betterSOUND.zip)**
+
+Décompressez-le et glissez `betterSOUND.app` dans Applications. L'app n'est pas notarisée par Apple : au premier lancement, ouvrez **Réglages Système → Confidentialité et sécurité** et cliquez sur **Ouvrir quand même**. Ou, dans le Terminal :
+
+```bash
+xattr -dr com.apple.quarantine /Applications/betterSOUND.app
+```
+
+## Compiler soi-même
 
 Il faut les outils de développement Apple (une seule fois) :
 
