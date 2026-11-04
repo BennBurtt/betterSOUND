@@ -39,9 +39,14 @@ iconutil -c icns "$ICONSET" -o "$APP/Contents/Resources/AppIcon.icns"
 # Logo affiché dans la fenêtre
 cp logo.png "$APP/Contents/Resources/logo.png"
 
-swiftc -O -parse-as-library \
-    -target "$(uname -m)-apple-macos13.0" \
-    main.swift -o "$APP/Contents/MacOS/betterSOUND"
+# Binaire universel (Apple Silicon + Intel)
+BUILD="$(mktemp -d)"
+for arch in arm64 x86_64; do
+    swiftc -O -parse-as-library \
+        -target "$arch-apple-macos13.0" \
+        main.swift -o "$BUILD/betterSOUND-$arch"
+done
+lipo -create "$BUILD"/betterSOUND-* -output "$APP/Contents/MacOS/betterSOUND"
 
 codesign --force --sign - "$APP" >/dev/null 2>&1 || true
 touch "$APP"   # force le Finder à rafraîchir l'icône

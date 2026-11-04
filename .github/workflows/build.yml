@@ -1,0 +1,40 @@
+name: Compiler betterSOUND
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compiler l'app
+        run: ./build.sh
+
+      - name: Vérifier le binaire
+        run: lipo -info betterSOUND.app/Contents/MacOS/betterSOUND
+
+      - name: Créer le zip
+        run: ditto -c -k --keepParent betterSOUND.app betterSOUND.zip
+
+      - name: Téléversement (artefact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: betterSOUND
+          path: betterSOUND.zip
+
+      - name: Publier la dernière version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest betterSOUND.zip \
+            --target "${{ github.sha }}" \
+            --title "betterSOUND – dernière version" \
+            --notes "App compilée automatiquement depuis le commit ${{ github.sha }}. Téléchargez betterSOUND.zip, décompressez-le et glissez betterSOUND.app dans Applications."
